@@ -110,6 +110,10 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
         self.conteudo = self.paths.conteudo(pet_id)   # frases, cartazes e imagens deste pet
         self.nome = pet_def["nome"]                   # quem fala nos textos; o programa é config.APP_NOME
         self.reacao_notebook = pet_def["reacao_notebook"]     # "bravo" ou "triste": depende do pet
+        self.computador = pet_def["computador"]               # "notebook" ou "rack"
+        # o que conta como trabalho: programar e projetar sempre, mais o que o pet somar (navegador, e-mail...)
+        self.atividades_trabalho = senses.ATIVIDADES_TRABALHO | {
+            a for a in pet_def["trabalho"] if a in senses.ACTIVITY_APPS}
         self.brain = LIFBrain(seed=pet_def["seed"], temperament=pet_def.get("temperamento"))
         self.state_file = self.pet_paths.nervous
         self.brain.load(str(self.state_file))
@@ -130,6 +134,7 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
         # ----- sentidos -----
         senses.definir_programas(config.load_programas(self.paths))
         self.senses = senses.ComputerSenses()
+        self.senses.trabalho = self.atividades_trabalho
         self.tracker = senses.ActivityTracker()
         self.activity = "IDLE"
         self.idle_seconds = 0.0
@@ -334,6 +339,8 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
                 self.drives.stimulate("app")
             elif event in ("ACTIVITY_CHANGED", "USER_RETURNED"):
                 self.drives.stimulate("novelty")
+                # abriu o e-mail, o navegador...: ele pode vir comentar (se o pet tiver recadinhos desse programa)
+                self.mischief_ctl.avisar_chegada(time.monotonic(), self.activity, self.prof["comentario_intervalo"])
         if self.perms["rotina"]:
             self.timeline.observe(
                 self.activity, self.idle_seconds, events, self.tracker.session_seconds, self.keyboard_active
@@ -373,7 +380,7 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
 
         moving = min(1.0, abs(body.vx) / 200.0 + (0.0 if body.grounded else 1.0))
         self.drives.update(dt, self.prof, self.asleep, moving, self.emotion.arousal,
-                           self.activity == "AWAY", engaged=self.activity in ("PROGRAMMING", "DESIGNING"),
+                           self.activity == "AWAY", engaged=self.trabalhando(),
                            preso=self.castigo.dentro, visitado=self.castigo.visita > 0.5)
         self.castigo.tick_lento(dt)
         if caressing:
@@ -528,6 +535,10 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
         self.pet.animate(now)
         self.maybe_mischief(now, dt, bounds, cursor, motores)
 
+    def trabalhando(self):
+        """Diz se você está trabalhando agora, pelo que conta como trabalho para este pet."""
+        return self.activity in self.atividades_trabalho
+
     def _atualizar_mesa(self, now):
         """O neurônio SENTAR decide se ele senta no notebook. Aqui só entram as condições do corpo."""
         rates = self.brain.pool_rates()
@@ -557,11 +568,18 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
         """Decide se vai aprontar uma travessura agora (não aprontar de castigo nem dormindo)."""
         if self.castigo.dentro:                      # de castigo não apronta (e não deixa objeto solto)
             return
+        comentou = self.mischief_ctl.comentar(
+            now, bounds, cursor, self.pet.body, activity=self.activity, emotion=self.pet_state.emotion,
+            perms=self.perms, prof=self.prof, fullscreen=self.fullscreen, asleep=self.asleep,
+            protest_stage=self.protest.stage,
+        )
+        if comentou:
+            return
         self.mischief_ctl.maybe_act(
             now, dt, bounds, cursor, self.pet.body, motores=motores,
             activity=self.activity, emotion=self.pet_state.emotion, perms=self.perms, prof=self.prof,
             fullscreen=self.fullscreen, asleep=self.asleep, protest_stage=self.protest.stage,
-            working=self.activity in ("PROGRAMMING", "DESIGNING") and not self.mesa.sentado,
+            working=self.trabalhando() and not self.mesa.sentado,
         )
 
     # ---------------- interação ----------------

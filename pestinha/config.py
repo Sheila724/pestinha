@@ -115,6 +115,7 @@ def save_permissions(paths, perms):
 PROFILES = {
     "teste": {
         "mischief_interval": (20.0, 45.0),
+        "comentario_intervalo": 30.0,  # s entre dois comentários sobre o mesmo tipo de programa
         "max_objects": 3,
         "emotion_tau": 1.5,          # quão rápido a emoção segue o cérebro
         "emotion_dwell": 0.6,        # tempo mínimo numa emoção
@@ -147,6 +148,7 @@ PROFILES = {
     },
     "normal": {
         "mischief_interval": (300.0, 900.0),
+        "comentario_intervalo": 1200.0,  # s: no máximo um comentário a cada 20 min por tipo de programa
         "max_objects": 3,
         "emotion_tau": 5.0,
         "emotion_dwell": 1.5,
@@ -224,7 +226,11 @@ DEFAULT_PET = {
     "brincadeira": {"bola": 1.0, "arremesso": 0.6, "postit": 0.5},   # pesos: 0 desliga
     "temperamento": {},
     "reacao_notebook": "bravo",         # o que sente se arrancarem o notebook: "bravo" ou "triste"
+    "trabalho": [],                     # atividades a mais que contam como trabalho: "BROWSING", "EMAIL"...
+    "computador": "notebook",           # onde ele trabalha: "notebook" (imagem ou desenho) ou "rack" (desenho)
 }
+
+COMPUTADORES = ("notebook", "rack")
 
 
 def list_pets(paths):
@@ -266,6 +272,11 @@ def _pet_valido(saved):
         out["reacao_notebook"] = saved["reacao_notebook"]
     if isinstance(saved.get("aparencia"), dict):
         out["aparencia"] = dict(saved["aparencia"])    # cores e acessórios: validados em body/desenho_rosto.py
+    trab = saved.get("trabalho")
+    if isinstance(trab, list) and all(isinstance(a, str) for a in trab):
+        out["trabalho"] = [a.strip().upper() for a in trab if a.strip()]
+    if saved.get("computador") in COMPUTADORES:
+        out["computador"] = saved["computador"]
     return out
 
 

@@ -1,0 +1,30 @@
+{
+  "_ajuda": "Uptime: plantonista de data center. Mesma rede do Bryan, outra semente e outro temperamento: concentra fácil quando você trabalha (e-mail e navegador contam como trabalho, ver 'trabalho'), fica curioso com novidade e se irrita quando dispensam os avisos dele. Trabalha num rack de servidores desenhado ('computador': 'rack') em vez do notebook. trabalho: atividades a mais que contam como trabalho (EMAIL, BROWSING, SOCIAL, MUSIC, GAMING). aparencia: cores #rrggbb.",
+  "nome": "Uptime",
+  "seed": 2024,
+  "temperamento": {
+    "WORK->FOCUS": 1.4,
+    "WORK->CALM": 1.3,
+    "NOVELTY->CURIOUS": 1.2,
+    "BOREDOM->CURIOUS": 1.2,
+    "DISMISS->FRUSTRATION": 1.2,
+    "IMPACT->FRUSTRATION": 1.1,
+    "TOY_TAKEN->GLOOM": 1.2,
+    "CARESS->CALM": 1.2
+  },
+  "brincadeira": {
+    "bola": 0.7,
+    "arremesso": 0.4,
+    "postit": 1.2
+  },
+  "reacao_notebook": "bravo",
+  "trabalho": ["EMAIL", "BROWSING"],
+  "computador": "rack",
+  "aparencia": {
+    "moldura": "#3a4046",
+    "casca": "#15181b",
+    "tela": "#0c1610",
+    "olho": "#39e27a",
+    "brilho": "#c9ffdc"
+  }
+}

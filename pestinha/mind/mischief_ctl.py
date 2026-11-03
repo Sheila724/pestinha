@@ -12,6 +12,7 @@ import random
 from collections import deque
 
 VALIDADE_PEDIDO_S = 10.0    # s: "fazer uma travessura agora" vale por este tempo
+VALIDADE_COMENTARIO_S = 30.0    # s: o comentário sobre o programa que você abriu só vale logo depois de abrir
 
 from ..core.emotion import PRIORITY
 from ..ajustes import (DISPENSA_RAPIDA as QUICK_DISMISS, PENALIDADE_DISPENSA as PENALTY_SECONDS,
@@ -35,6 +36,45 @@ class MischiefController:
         self.penalty_until = 0.0
         self.pedido_forcado = False     # "fazer uma travessura agora": ignora o sorteio uma vez
         self.forcado_ate = 0.0
+        self.comentario = None          # (atividade, quando): você abriu um programa e ele quer comentar
+        self.ultimo_comentario = {}     # atividade -> quando ele comentou por último
+
+    def avisar_chegada(self, now, activity, intervalo):
+        """Você foi para outro tipo de programa: ele comenta, se não comentou sobre ele há pouco."""
+        if self.engine.notas_de(activity) is None:
+            return
+        if now - self.ultimo_comentario.get(activity, -1e9) >= intervalo:
+            self.comentario = (activity, now)
+
+    def comentar(self, now, bounds, cursor, body, *, activity, emotion, perms, prof, fullscreen, asleep,
+                 protest_stage):
+        """
+        Leva um post-it sobre o programa que você acabou de abrir (e-mail, navegador...).
+        Segue as mesmas regras das travessuras; se o corpo estiver ocupado, tenta no próximo quadro.
+        """
+        if self.comentario is None:
+            return None
+        ativ, desde = self.comentario
+        if ativ != activity or now - desde > VALIDADE_COMENTARIO_S:
+            self.comentario = None                   # você já saiu do programa, ou passou a hora
+            return None
+        if body.held or not body.grounded or self.behavior.mission:
+            return None
+        if (asleep or protest_stage >= 3 or emotion in ("triste", "dormindo") or not perms["bilhetes"]
+                or self.postit_weight <= 0 or not self.engine.allowed(perms, prof, fullscreen)):
+            self.comentario = None
+            return None
+        self.comentario = None
+        plan = self.engine.plan_contexto(activity)
+        if plan is None:
+            return None
+        self.ultimo_comentario[activity] = now
+        self.behavior.start_mission(plan, bounds, cursor, now)
+        self.memory.start(self.memory.context(activity, emotion), "bilhete", plan[1])
+        self.drives.stimulate("mischief")
+        if self.debug():
+            log(f"[comentário] {activity}: {plan[1].text}")
+        return "bilhete"
 
     def pedir(self, now):
         """O comando do menu: a próxima tentativa acontece, se as regras permitirem, nos próximos segundos."""
@@ -61,7 +101,7 @@ class MischiefController:
             return None
 
         ctx = self.memory.context(activity, emotion)
-        options = self.engine.available(emotion, perms, working=working)
+        options = self.engine.available(emotion, perms, working=working, activity=activity)
         if self.postit_weight <= 0:                  # peso zero: post-its (bilhetes) ficam desligados
             options = [o for o in options if not o.startswith("bilhete")]
         if protest_stage == 4:                       # revolução: só traz fotinhas bravas
@@ -83,7 +123,7 @@ class MischiefController:
         if self.debug() and self.memory.last_choice:
             log(f"[escolha] {ctx} -> {action} ({self.memory.last_choice[2]})")
 
-        plan = self.engine.plan(action, emotion)
+        plan = self.engine.plan(action, emotion, activity=activity)
         thing = plan[1] if plan else None
         if plan and plan[0] == "corner":
             if not self.engine.show_in_corner(thing, bounds, cursor):

@@ -1,0 +1,56 @@
+# Recadinhos do Uptime, plantonista de data center. Um por linha. Linhas com # são ignoradas.
+# Pode editar com ele rodando: ele relê o arquivo sozinho.
+# Há também recadinhos_email.txt (Thunderbird) e recadinhos_navegador.txt, usados quando
+# esses programas estão abertos.
+
+# ---- plantão ----
+bom plantão pra nós dois
+o café do NOC acabou de novo
+bebe água. o datacenter já é seco o suficiente.
+pausa de 5 minutos. o Zabbix avisa se cair algo.
+tô de olho nos gráficos 👀
+hoje tá tranquilo... não, esquece que eu falei isso
+quem disse "tá tranquilo" vai pagar o café
+já anotou o que fez no chamado?
+documentou? se não tá no Netbox, não existe.
+levanta e estica as costas. a fila de chamados espera.
+passagem de plantão sem anotação não vale
+
+# ---- sala dos servidores ----
+leva o casaco, a sala tá a 18 °C
+quem deixou a porta do rack aberta?
+etiqueta o cabo. o você do futuro agradece.
+esse patch panel tá parecendo macarrão
+corredor frio é frio. corredor quente é quente. não inverte.
+o ar-condicionado tá fazendo um barulho estranho
+ouviu esse bip? é o nobreak. ou é a minha ansiedade.
+teste do gerador é hoje? ninguém me avisa nada
+crachá na biometria, por favor
+servidor sem trilho é servidor no chão
+
+# ---- clássicos do suporte ----
+já tentou desligar e ligar de novo?
+"a internet tá lenta" de novo?
+o cliente disse que não mexeu em nada. claro.
+funciona na minha máquina ¯\_(ツ)_/¯
+foi o DNS. é sempre o DNS.
+não foi o DNS? então foi o DNS mesmo.
+ping responde, então tá vivo
+latência alta? culpa da fibra. sempre da fibra.
+é cabo. 90% das vezes é cabo.
+reinicia o serviço antes de reiniciar o servidor
+abriu chamado ou só mandou mensagem no WhatsApp?
+
+# ---- boas práticas (e sarcasmo) ----
+nunca mexa em produção na sexta-feira
+backup que não foi testado é só esperança
+RAID não é backup. repete comigo.
+o disco tá amarelo. amarelo não é cor de disco feliz.
+o certificado vence quando? hein? HEIN?
+janela de manutenção é sagrada
+"é rapidinho" — famosas últimas palavras
+tem snapshot? então pode mexer. com carinho.
+rollback planejado é rollback que funciona
+uptime de 400 dias não é troféu, é pendência de atualização
+change aprovada? então vai.
+eu só monitoro aqui. infelizmente.

@@ -15,6 +15,8 @@ Um pet são duas coisas com o mesmo nome:
 | `brincadeira` | Pesos de cada jeito de brincar: `bola` (chuta), `arremesso` (joga no cursor), `postit` (cola post-its). Peso 0 desliga. |
 | `temperamento` | Ganhos que multiplicam estímulos antes de chegarem aos interneurônios. Ex.: `"DISMISS->FRUSTRATION": 1.3` deixa o pet mais irritado quando você dispensa coisas. Os nomes estão em [docs/REDE_NEURAL.md](../docs/REDE_NEURAL.md). |
 | `reacao_notebook` | `"bravo"` ou `"triste"`: o que ele sente quando arrancam o notebook dele. |
+| `trabalho` | Opcional. Atividades a mais que contam como trabalho para este pet, além de programar e projetar: `"EMAIL"`, `"BROWSING"`, `"SOCIAL"`, `"MUSIC"`, `"GAMING"`. Ex.: `["EMAIL", "BROWSING"]`. |
+| `computador` | Opcional. `"notebook"` (padrão: a imagem `notebook.png` ou o desenho) ou `"rack"` (um rack de servidores desenhado, com LEDs que piscam enquanto ele trabalha). |
 | `aparencia` | Opcional. Cores `#rrggbb` de `moldura`, `casca`, `tela`, `olho` e `brilho`, e `acessorios` com a cor de cada um: `{"oculos": "#f2f2f2", "gravata": "#b3261e"}`. Sem o campo, o visual original. |
 
 Campos com tipo errado são ignorados e ficam com o valor padrão (não derrubam o app).
@@ -29,6 +31,7 @@ Pode editar com ele aberto: ele relê os textos e procura imagens novas sozinho.
 | `memes/trabalhando/` | Memes de quando você programa e ele não está sentado no notebook. |
 | `recadinhos.txt` | Uma frase por linha, sorteada para os post-its. `#` é comentário. |
 | `recadinhos_tristes.txt` | Bilhetes que ele cola quando está triste. |
+| `recadinhos_<programa>.txt` | Opcionais: frases de quando aquele tipo de programa está aberto. `<programa>` é `email` (Thunderbird), `navegador`, `programando`, `projetando`, `conversa`, `musica` ou `jogo`. Ao abrir o programa ele vem colar uma (no máximo uma a cada 20 min por tipo); no resto do tempo, parte dos post-its comuns sai daqui. |
 | `cartazes.txt` | Cartazes por seção: `[reclamacao]`, `[manifestacao]`, `[greve]`, `[revolucao]`, `[acordo]`, `[desistiu]`, `[saudade]`, `[chorando]`, `[abandonado]`, `[volto]`, e no cantinho do castigo `[castigo]` e `[xingamento]`. |
 | `bolinha_tenis.png`, `bolinha_papel.png`, `notebook.png` | Opcionais: se existirem aqui, valem no lugar dos de `assets/comum/`. |
 
@@ -39,6 +42,10 @@ de outro pet.
 ## Personagens que já existem
 
 - **Bryan** (`bryan.json`, `bryan/`): o original.
+- **Uptime** (`uptime.json`, `uptime/`): plantonista de data center. Frases de plantão, NOC, chamados e sala
+  fria; e-mail e navegador contam como trabalho; trabalha num rack em vez do notebook; olhos de LED verde.
+  Recadinhos próprios do e-mail e do navegador. Memes em forma de cartão de status do NOC
+  (`uptime/memes/`), desenhados por `ferramentas/gerar_memes_uptime.py`.
 - **Jorge** (`jorge.json`, `jorge/`): coach trambiqueiro. Mais insistente quando ignorado, muito animado
   com atenção, desesperado quando dispensam as coisas dele e quase nunca triste. O panfleto que ele atira
   (`jorge/bolinha_papel.png`) é desenhado por `ferramentas/gerar_panfleto.py`. Moldura e olhos dourados

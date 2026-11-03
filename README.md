@@ -29,6 +29,7 @@ Para criar um, veja [pets/README.md](pets/README.md).
 | Personagem | Quem é |
 |---|---|
 | **Bryan** | Revoltado contra o cursor, o Alt+F4 e o Gerenciador de Tarefas. Protesta, faz greve e revolução. |
+| **Uptime** | Plantonista de data center. Fala de plantão, chamados, alertas do Zabbix, sala fria, cabos e backup. Trabalha num rack de servidores (não tem notebook) e conta e-mail (Thunderbird) e navegador como trabalho: senta junto e comenta quando você abre um deles. Memes próprios em forma de cartão de status do NOC (feliz, contente, curioso, bravo, triste e trabalhando). |
 | **Jorge** | Personagem de sátira. Não é referência a nenhum coach, empresa ou pessoa real. Os mesmos estágios viram prospecção, marketing agressivo, "assinatura premium" (só no cartaz) e colapso financeiro; ele atira panfletos de mentoria. É sátira: não vende, cobra nem bloqueia nada. Tem cinco memes felizes, contentes, curiosos e bravos próprios; as outras emoções ainda não têm. |
 
 ## O que o pet faz
@@ -39,7 +40,8 @@ Para criar um, veja [pets/README.md](pets/README.md).
 | **Emoções** | Saem dos motores da rede: feliz, contente, curioso, observando, bravo, triste, assustado, dramático, dormindo. |
 | **Carinho** | Passe o mouse de um lado para o outro em cima dele: fecha os olhinhos de felicidade e aprende com isso. |
 | **Bolinha** | Ele chuta e arremessa uma bolinha de tênis; você pode pegar, levar embora (ele reage) ou guardar. |
-| **Notebook** | Quando você trabalha (VS Code, Visual Studio, PyCharm, Claude, Codex), ele pode sentar atrás do notebook e trabalhar junto. Você também pode pedir; ele decide se quer. |
+| **Notebook** | Quando você trabalha (VS Code, Visual Studio, PyCharm, Claude, Codex), ele pode sentar atrás do notebook e trabalhar junto. Você também pode pedir; ele decide se quer. Cada pet pode contar outros programas como trabalho (o Uptime conta e-mail e navegador) e trocar o notebook por um rack. |
+| **Programas** | Reconhece editores, navegadores, e-mail (Thunderbird), chat, música e jogos. Com `recadinhos_email.txt` ou `recadinhos_navegador.txt` na pasta do pet, ele comenta quando você abre aquele programa. |
 | **Travessuras** | Traz memes, fotos e post-its para a tela. Com que frequência é decidido pela rede (tédio, curiosidade). |
 | **Protesto** | Bravo por muito tempo: reclamação, manifestação, greve e revolução contra o cursor, com cartazes e bolinhas de papel. |
 | **Tristeza** | Sozinho ou ignorado, fica triste, vai para o cantinho e cola bilhetes tristes. |
@@ -112,7 +114,7 @@ Detalhes em [PRIVACIDADE.md](PRIVACIDADE.md).
   Pode editar com ele aberto.
 - **Bolinhas, notebook e suas fotos:** `assets/comum/`, valem para qualquer personagem
   ([assets/LEIA-ME.txt](assets/LEIA-ME.txt)).
-- **Programas que ele reconhece:** `assets/comum/programas.json` soma programas à lista de trabalho, jogo, música etc.
+- **Programas que ele reconhece:** `assets/comum/programas.json` soma programas à lista de trabalho, jogo, música, e-mail etc.
 - **Personalidade:** `pets/bryan.json` (semente da rede, temperamento, pesos de brincadeira, reação ao notebook).
 - **Números do comportamento:** `pestinha/ajustes.py`, todos validados ao abrir.
 
