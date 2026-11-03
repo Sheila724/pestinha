@@ -37,6 +37,7 @@ from .store import pasta_gravavel
 from .ajustes import (
     ATIVIDADE_MINIMA_VOO as REFLEX_MIN_HZ,
     BATIDA_FORTE as HARD_IMPACT,
+    INSATISFACAO_PROVOCACAO,
     BATIDA_TONTA as DIZZY_IMPACT,
     DURACAO_TONTURA as DIZZY_SECONDS,
     INTERVALO_BATIDA as IMPACT_COOLDOWN,
@@ -189,6 +190,7 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
         # ----- reflexos e medições -----
         self.in_flight = False      # voando depois de um arremesso
         self.last_impact = 0.0
+        self.arremessos = []        # quando foram os arremessos recentes (muitos seguidos irritam)
         self.last_poke = 0.0
         self.poke_probe = None      # (quando medir, CHEER antes da cutucada)
         self.last_poke_response = None
@@ -500,6 +502,7 @@ class PestinhaApp(SessaoMixin, InteracaoMixin, QObject):
         if speed >= HARD_IMPACT and now - self.last_impact >= IMPACT_COOLDOWN:
             self.last_impact = now
             self.senses.impact(min(1.0, 0.3 + (speed - HARD_IMPACT) / 1500.0))
+            self.provocar(INSATISFACAO_PROVOCACAO)
             if self.asleep:
                 self.sleep.wake(startled=True)
             if speed >= DIZZY_IMPACT:

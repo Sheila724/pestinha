@@ -131,5 +131,5 @@ class StrikePanel(FloatingWidget):
         p.setFont(QFont("Consolas", 9))
         p.drawText(QRectF(x0, 248, x1 - x0, 40), Qt.AlignLeft | Qt.AlignTop,
                    f"raiva da rede {anger:.2f}  ·  insatisfação {pr.grievance:.2f}  ·  "
-                   f"sobe com dispensas, arremessos e batidas; cai com carinho e com o tempo.")
+                   f"sobe com dispensas, muitos arremessos seguidos e batidas fortes; cai com carinho e com o tempo.")
         p.end()

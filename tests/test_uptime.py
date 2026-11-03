@@ -286,3 +286,66 @@ def test_uptime_tem_memes_para_cada_humor_e_para_o_trabalho():
         meme = config.meme_for(c.memes, emocao)
         assert meme is not None and meme.parent.name == emocao and "uptime" in meme.parts
     assert config.list_images(c.memes_trabalho)
+
+
+# ---------------- arremessos e o painel de protesto ----------------
+
+def app_para_arremessar(tmp_path, monkeypatch, pet="uptime"):
+    import shutil
+    paths = Paths(root=tmp_path)
+    shutil.copytree(ROOT / "pets", paths.pets)
+    shutil.copytree(ROOT / "assets", paths.assets)
+    SettingsStore(paths).update(dict(config.DEFAULT_PERMISSIONS, pet=pet))
+    qt()
+    import pestinha.app as app_mod
+    monkeypatch.setattr(app_mod, "PanicHotkey", lambda: SimpleNamespace(ok=True, pressed=Mock()))
+    app = app_mod.PestinhaApp(SettingsStore(paths), paths)
+    for timer in app.findChildren(app_mod.QTimer):
+        timer.stop()
+    monkeypatch.setattr(app, "_congelado", lambda: False)
+    return app
+
+
+def test_poucos_arremessos_sao_brincadeira_muitos_irritam(tmp_path, monkeypatch):
+    """Antes, arremessar o pet não mexia no painel de protesto: o arremesso só alimentava a brincadeira."""
+    import pestinha.controle.interacao as inter
+    from pestinha import ajustes
+    relogio = [1000.0]
+    monkeypatch.setattr(inter.time, "monotonic", lambda: relogio[0])
+    app = app_para_arremessar(tmp_path, monkeypatch)
+    for _ in range(ajustes.ARREMESSOS_TOLERADOS):
+        app.on_thrown(2000.0)
+        relogio[0] += 3.0
+    assert app.protest.grievance == 0.0 and app.senses.pulse["IMPACT"] == 0.0
+    for _ in range(7):
+        app.on_thrown(2000.0)
+        relogio[0] += 3.0
+    assert app.protest.grievance >= 7 * ajustes.INSATISFACAO_PROVOCACAO - 1e-9
+    assert app.protest.grievance >= config.PROFILES["normal"]["stage_up"][0]     # dá para reclamar
+    assert app.senses.pulse["IMPACT"] > 0.5                                       # a rede sente a irritação
+    app.mesa.fechar()
+
+
+def test_arremessos_espacados_continuam_brincadeira(tmp_path, monkeypatch):
+    import pestinha.controle.interacao as inter
+    from pestinha import ajustes
+    relogio = [1000.0]
+    monkeypatch.setattr(inter.time, "monotonic", lambda: relogio[0])
+    app = app_para_arremessar(tmp_path, monkeypatch)
+    for _ in range(10):
+        app.on_thrown(2000.0)
+        relogio[0] += ajustes.JANELA_ARREMESSOS / ajustes.ARREMESSOS_TOLERADOS + 1.0
+    assert app.protest.grievance == 0.0
+    app.mesa.fechar()
+
+
+def test_dormindo_nao_acumula_insatisfacao(tmp_path, monkeypatch):
+    app = app_para_arremessar(tmp_path, monkeypatch)
+    import pestinha.app as app_mod
+    monkeypatch.setattr(app_mod.PestinhaApp, "asleep", property(lambda self: True))
+    app.provocar(0.5)
+    assert app.protest.grievance == 0.0
+    monkeypatch.setattr(app_mod.PestinhaApp, "asleep", property(lambda self: False))
+    app.provocar(0.5)
+    assert app.protest.grievance == 0.5
+    app.mesa.fechar()
