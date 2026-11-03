@@ -211,6 +211,10 @@ class ComputerSenses:
         """strength 0..1 (velocidade da batida); a irritação acumula entre batidas."""
         self.kick("IMPACT", 0.5 * strength)
 
+    def irritar(self, strength):
+        """Irritação física sem batida (ex.: arremessos demais seguidos): entra pelo mesmo canal da batida."""
+        self.kick("IMPACT", strength)
+
     def update(self, activity, idle_seconds, drives, caressing=False, mouse_moving=False):
         """drives: canais internos da homeostase (BOREDOM, LONELY, FATIGUE)."""
         now = time.monotonic()

@@ -13,6 +13,10 @@ from PySide6.QtWidgets import QMenu
 from ..body.pet import cursor_pos
 from ..ajustes import (
     INSATISFACAO_NOTEBOOK,
+    ARREMESSOS_TOLERADOS,
+    INSATISFACAO_PROVOCACAO,
+    IRRITACAO_ARREMESSO,
+    JANELA_ARREMESSOS,
     COOLDOWN_CUTUCADA as POKE_COOLDOWN,
     ESPERA_MEDIDA_CUTUCADA as POKE_PROBE,
     HZ_RESPOSTA_CHEIA as POKE_FULL_HZ,
@@ -80,15 +84,31 @@ class InteracaoMixin:
             self.sleep.wake(startled=True)
 
     def on_thrown(self, speed):
-        """Você arremessou o pet: a velocidade vira intensidade do arremesso; ele não aprende com isso na pausa."""
+        """
+        Você arremessou o pet: a velocidade vira intensidade do arremesso; ele não aprende com isso na pausa.
+        Os primeiros arremessos são brincadeira; muitos seguidos (JANELA_ARREMESSOS) irritam e somam insatisfação.
+        """
         if self._congelado():
             return
-        self.conditioning.outcome(time.monotonic())
+        now = time.monotonic()
+        self.conditioning.outcome(now)
         self.senses.thrown(min(1.0, speed / 2000.0))
+        self.arremessos = [t for t in self.arremessos if now - t < JANELA_ARREMESSOS] + [now]
+        if len(self.arremessos) > ARREMESSOS_TOLERADOS:
+            self.senses.irritar(IRRITACAO_ARREMESSO)
+            self.provocar(INSATISFACAO_PROVOCACAO)
+            if self.debugging():
+                log(f"[arremesso] {len(self.arremessos)} seguidos: irritou "
+                    f"(insatisfação {self.protest.grievance:.2f})")
         self.timeline.note_interaction()
         self.drives.stimulate("throw")
         self.drives.touched("throw")
         self.in_flight = True
+
+    def provocar(self, quanto):
+        """Provocação física (arremesso demais, batida forte): soma insatisfação, se ele não estiver dormindo."""
+        if not self.asleep:
+            self.protest_ctl.provoke(quanto)
 
     def on_dismissed(self, thing, elapsed):
         """Você dispensou uma travessura: ela some, e o tempo até você fechar vira aprendizado (fechar rápido é pior)."""

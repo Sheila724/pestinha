@@ -29,6 +29,10 @@ DURACAO_TONTURA = 1.6           # s olhando em volta depois de uma batida tonta
 INTERVALO_BATIDA = 0.6          # s: quiques da mesma batida não contam de novo
 ATIVIDADE_MINIMA_VOO = 4.0      # Hz: abaixo disso o reflexo de voo é só alegria
 SILENCIO_MOUSE = 0.4            # s sem o cursor andar para o teclado contar
+JANELA_ARREMESSOS = 60.0        # s em que os arremessos contam juntos
+ARREMESSOS_TOLERADOS = 3        # até tantos arremessos na janela é brincadeira; daí em diante irrita
+IRRITACAO_ARREMESSO = 0.6       # 0..1: pulso de irritação (canal IMPACT) de cada arremesso a mais
+INSATISFACAO_PROVOCACAO = 0.04  # quanto a insatisfação sobe direto a cada arremesso a mais ou batida forte
 
 # ---------------------------------------------------------------------------
 # Cutucada e a resposta medida na rede
@@ -148,6 +152,10 @@ _LIMITES = {
     "DURACAO_CARINHO": (float, 0.0, 10.0),
     "BATIDA_FORTE": (float, 100.0, 10000.0),
     "BATIDA_TONTA": (float, 100.0, 10000.0),
+    "JANELA_ARREMESSOS": (float, 1.0, 3600.0),
+    "ARREMESSOS_TOLERADOS": (int, 0, 100),
+    "IRRITACAO_ARREMESSO": (float, 0.0, 1.0),
+    "INSATISFACAO_PROVOCACAO": (float, 0.0, 1.3),
     "DURACAO_TONTURA": (float, 0.0, 10.0),
     "INTERVALO_BATIDA": (float, 0.0, 10.0),
     "ATIVIDADE_MINIMA_VOO": (float, 0.0, 100.0),

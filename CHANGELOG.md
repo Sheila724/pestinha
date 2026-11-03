@@ -14,6 +14,11 @@
   com LEDs que piscam enquanto ele trabalha. Bryan e Jorge continuam com o notebook.
 - Memes do Uptime: cartões de status do NOC (OK, ATENÇÃO, CRÍTICO, SEM DADOS) em `pets/uptime/memes/`,
   desenhados por `ferramentas/gerar_memes_uptime.py` (sem imagem de terceiros).
+- Correção: arremessar o pet não mexia no painel de protesto (o arremesso só alimentava a brincadeira, e no
+  modo normal a raiva levava ~1 h para virar insatisfação). Agora os primeiros 3 arremessos em 1 min são
+  brincadeira; daí em diante cada arremesso irrita e soma 0,04 de insatisfação, assim como cada batida forte.
+  Ajustes em `pestinha/ajustes.py`: `JANELA_ARREMESSOS`, `ARREMESSOS_TOLERADOS`, `IRRITACAO_ARREMESSO`,
+  `INSATISFACAO_PROVOCACAO`.
 
 ## 0.8.0 — melhorias para o Windows
 
