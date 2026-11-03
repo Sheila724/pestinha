@@ -21,6 +21,8 @@ Use o nome do processo, como aparece no Gerenciador de Tarefas. Vale ao reabrir.
     "PROGRAMMING": ["meueditor.exe"],
     "GAMING": ["meujogo.exe"]
 
+Categorias: PROGRAMMING, DESIGNING, GAMING, BROWSING, SOCIAL, MUSIC e EMAIL (o Thunderbird já vem nela).
+
 PNG com fundo transparente fica mais bonito. Tamanho não importa: ele reduz.
 Imagem que não abre (arquivo corrompido ou formato estranho) é ignorada.
 

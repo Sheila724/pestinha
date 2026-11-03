@@ -23,6 +23,7 @@ ACTIVITY_APPS = {
                  "brave", "brave browser", "safari"},
     "SOCIAL": {"discord", "teams", "microsoft teams", "whatsapp"},
     "MUSIC": {"spotify"},
+    "EMAIL": {"thunderbird", "betterbird"},
 }
 
 # Qual canal sensorial cada atividade estimula
@@ -33,7 +34,11 @@ ACTIVITY_CHANNEL = {
     "MUSIC": "SOUND",
     "SOCIAL": "SOCIAL",
     "BROWSING": "WEB",
+    "EMAIL": "SOCIAL",
 }
+
+# Sempre contam como trabalho; cada pet pode somar outras no campo "trabalho" do pets/<pet>.json
+ATIVIDADES_TRABALHO = frozenset({"PROGRAMMING", "DESIGNING"})
 
 _programas_extras = {}          # os de assets/comum/programas.json, por categoria (ver definir_programas)
 
@@ -172,6 +177,7 @@ class ComputerSenses:
         self.dragging = False
         self.caress = 0.0
         self.last = time.monotonic()
+        self.trabalho = ATIVIDADES_TRABALHO   # atividades que estimulam o canal WORK (o app soma as do pet)
 
     def kick(self, channel, amount):
         """Dá um pulso num canal sensorial (ele volta ao normal aos poucos)."""
@@ -214,7 +220,7 @@ class ComputerSenses:
         for name, tau in self.PULSE_TAU.items():
             self.pulse[name] *= math.exp(-dt / tau)
 
-        active = ACTIVITY_CHANNEL.get(activity)
+        active = "WORK" if activity in self.trabalho else ACTIVITY_CHANNEL.get(activity)
         for name in self.level:
             target = 1.0 if name == active else 0.0
             self.level[name] += (target - self.level[name]) * (1.0 - math.exp(-dt / 3.0))

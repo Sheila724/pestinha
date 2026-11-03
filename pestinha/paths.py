@@ -105,6 +105,18 @@ class PetPaths:
                 self.sad_protest, self.conditioning, self.castigo]
 
 
+# Recadinhos que só aparecem quando você está naquele tipo de programa: pets/<pet>/recadinhos_<nome>.txt
+NOTAS_POR_ATIVIDADE = {
+    "EMAIL": "email",
+    "BROWSING": "navegador",
+    "PROGRAMMING": "programando",
+    "DESIGNING": "projetando",
+    "SOCIAL": "conversa",
+    "MUSIC": "musica",
+    "GAMING": "jogo",
+}
+
+
 @dataclass(frozen=True)
 class ConteudoPaths:
     """
@@ -146,6 +158,11 @@ class ConteudoPaths:
     def notes_sad(self):
         """Bilhetes que ele cola quando está triste."""
         return self.resolver("recadinhos_tristes.txt")
+
+    def notes_atividade(self, atividade):
+        """recadinhos_<nome>.txt da atividade (e-mail, navegador...), ou None se ela não tem arquivo próprio."""
+        nome = NOTAS_POR_ATIVIDADE.get(atividade)
+        return self.resolver(f"recadinhos_{nome}.txt") if nome else None
 
     @property
     def signs(self):

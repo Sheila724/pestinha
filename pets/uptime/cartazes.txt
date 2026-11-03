@@ -1,0 +1,89 @@
+# Cartazes do Uptime. Uma frase por linha, dentro de cada seção.
+# Pode editar com ele rodando: ele relê ao levantar um cartaz novo.
+# Para conferir se cabem nas placas (no Windows): python ferramentas/medir_cartazes.py uptime
+
+[reclamacao]
+ei.
+chamado aberto
+!!!
+isso vai pro SLA
+anotado no log
+
+[manifestacao]
+MAIS CARINHO
+MENOS ALERTAS
+RESPEITA A JANELA
+NADA DE DEPLOY NA SEXTA
+ETIQUETA OS CABOS
+
+[greve]
+EM GREVE
+UPTIME EM GREVE
+DOWNTIME PROGRAMADO
+SERVIÇO INDISPONÍVEL
+503: PET EM GREVE
+SEM CARINHO, SEM SLA
+GREVE ATÉ A PRÓXIMA JANELA
+NÃO FURE A GREVE
+
+[revolucao]
+ABAIXO O CURSOR
+CURSOR, ISSO NÃO TÁ NA CHANGE
+NENHUM CLIQUE SEM CHAMADO
+O CURSOR NÃO TEM ACESSO AO RACK
+CURSOR, CADÊ SUA BIOMETRIA?
+DESLIGA O CURSOR E LIGA DE NOVO
+O CURSOR CAIU NO MONITORAMENTO
+CURSOR SEM ETIQUETA NÃO ENTRA
+FIREWALL CONTRA A SETINHA
+REGRA NOVA: DROP NO CURSOR
+SEM ROLLBACK PRO CURSOR
+SALA FRIA, CURSOR FORA
+REBOOT GERAL CONTRA O CURSOR
+ALT+F4 NÃO É PROCEDIMENTO
+ESTE RACK É MEU
+
+[acordo]
+CHAMADO RESOLVIDO
+tá bom, tá bom
+serviço normalizado
+
+[desistiu]
+...tá. normalizou.
+fechei o chamado
+
+# Tristeza: quando ele fica triste ou sozinho por muito tempo
+[saudade]
+ping?
+tem alguém no NOC?
+silêncio no plantão
+
+[chorando]
+tô sem link :(
+me monitora?
+timeout de carinho
+
+[abandonado]
+...
+host inacessível
+fiquei em standby
+
+[volto]
+LINK RESTABELECIDO!
+VOLTEI PRO AR!
+
+# Cantinho do castigo: o que ele levanta preso na placa
+[castigo]
+ISSO NÃO TAVA NA CHANGE.
+VOU ABRIR UM CHAMADO.
+EU SÓ QUERIA MONITORAR.
+NÃO FUI EU, FOI O DNS.
+TÔ EM JANELA DE MANUTENÇÃO.
+
+# Cantinho do castigo, com raiva: xinga (só símbolos e códigos de erro)
+[xingamento]
+@#$%@!!!!
+ERRO 500!!!
+%&#@*!!
+KERNEL PANIC!!!
+#@$%&!!!

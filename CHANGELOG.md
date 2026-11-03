@@ -1,5 +1,20 @@
 # Histórico de versões
 
+## Não lançado — Uptime, o plantonista de data center
+
+- Novo personagem **Uptime** (`pets/uptime.json` e `pets/uptime/`): frases do dia a dia de um data center
+  (plantão, NOC, chamados, alertas, sala fria, cabos, backup) nos post-its, bilhetes tristes e cartazes.
+- Thunderbird (e Betterbird) reconhecidos: nova categoria `EMAIL`, que também aceita programas em `programas.json`.
+- Campo `trabalho` no `pets/<pet>.json`: atividades a mais que contam como trabalho para aquele pet. No Uptime,
+  e-mail e navegador: ele se concentra, senta para trabalhar junto e não fica entediado enquanto você usa os dois.
+- Recadinhos por programa: `recadinhos_email.txt`, `recadinhos_navegador.txt` (e `programando`, `projetando`,
+  `conversa`, `musica`, `jogo`). Ao abrir aquele tipo de programa, ele vem colar um post-it sobre ele
+  (no máximo um a cada 20 min por tipo); no resto do tempo, parte dos post-its comuns sai desses arquivos.
+- Campo `computador` no `pets/<pet>.json`: `"rack"` troca o notebook por um rack de servidores desenhado,
+  com LEDs que piscam enquanto ele trabalha. Bryan e Jorge continuam com o notebook.
+- Memes do Uptime: cartões de status do NOC (OK, ATENÇÃO, CRÍTICO, SEM DADOS) em `pets/uptime/memes/`,
+  desenhados por `ferramentas/gerar_memes_uptime.py` (sem imagem de terceiros).
+
 ## 0.8.0 — melhorias para o Windows
 
 ### Correções

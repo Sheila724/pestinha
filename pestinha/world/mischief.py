@@ -19,6 +19,7 @@ from .objetos import ImageThing, NoteThing
 from ..ajustes import TAMANHO_MEME as MEME_MAX, TAMANHO_MEME_CANTO as CORNER_MAX
 
 CORNER_MARGIN = 18
+CHANCE_CONTEXTO = 0.6     # num post-it comum, chance de usar o recadinho do programa aberto (e-mail, navegador...)
 
 
 class MischiefEngine(QObject):
@@ -33,6 +34,17 @@ class MischiefEngine(QObject):
         self.paths = conteudo                                 # ConteudoPaths: só o conteúdo deste pet e o comum
         self.notes = config.Notes(conteudo.notes)
         self.notes_sad = config.Notes(conteudo.notes_sad)       # bilhetes de quando ele está triste
+        self._notas_contexto = {}                               # atividade -> Notes (recadinhos_<nome>.txt)
+
+    def notas_de(self, atividade):
+        """Recadinhos próprios do programa aberto (e-mail, navegador...), ou None se não houver."""
+        caminho = self.paths.notes_atividade(atividade)
+        if caminho is None:
+            return None
+        notas = self._notas_contexto.get(atividade)
+        if notas is None:
+            notas = self._notas_contexto[atividade] = config.Notes(caminho)
+        return notas if notas.has_lines() else None
 
     # ---------------- agenda ----------------
 
@@ -46,17 +58,19 @@ class MischiefEngine(QObject):
             return False
         return len(self.things) < prof["max_objects"]
 
-    def available(self, emotion, perms, working=False):
+    def available(self, emotion, perms, working=False, activity=None):
         """Ações que as regras permitem agora (a memória escolhe entre elas)."""
         if emotion == "dormindo":
             return []                                   # dormindo, nem pensar
         if emotion == "triste":                         # triste só cola bilhetes tristes
             return ["bilhete_triste", "nada"] if perms["bilhetes"] and self.notes_sad.has_lines() else []
-        if working:                                     # programando sem estar sentado: meme de trabalho
+        contexto = perms["bilhetes"] and self.notas_de(activity) is not None
+        if working:                                     # trabalhando sem estar sentado: meme ou recadinho do programa
             trabalho = perms["memes"] and bool(config.list_images(self.paths.memes_trabalho))
-            return ["meme_trabalho", "nada"] if trabalho else []
+            options = (["meme_trabalho"] if trabalho else []) + (["bilhete"] if contexto else [])
+            return options + ["nada"] if options else []
         memes = perms["memes"] and config.meme_for(self.paths.memes, emotion) is not None
-        notes = perms["bilhetes"] and bool(self.notes.lines or self.notes.pick())
+        notes = perms["bilhetes"] and bool(self.notes.lines or self.notes.pick() or contexto)
         if emotion == "bravo":
             options = ((["meme_canto", "meme"] if memes else []) + (["bilhete_canto"] if notes else []))
             return options + ["nada"] if options else []
@@ -64,7 +78,7 @@ class MischiefEngine(QObject):
         options = (["meme"] if memes else []) + (["foto"] if photos else []) + (["bilhete"] if notes else [])
         return options + ["atravessar", "nada"] if options else []
 
-    def plan(self, action, emotion):
+    def plan(self, action, emotion, activity=None):
         """
         Transforma a ação escolhida em algo concreto:
             ("corner", thing)    coisinha de revolta num canto
@@ -73,16 +87,26 @@ class MischiefEngine(QObject):
             None                 nada
         """
         if action in ("meme_canto", "bilhete_canto"):
-            thing = self._make(action.split("_")[0], emotion, small=True)
+            thing = self._make(action.split("_")[0], emotion, small=True, activity=activity)
             return ("corner", thing) if thing else None
         if action in ("meme", "meme_trabalho", "foto", "bilhete", "bilhete_triste"):
-            thing = self._make(action, emotion, small=False)
+            thing = self._make(action, emotion, small=False, activity=activity)
             return ("deliver", thing) if thing else None
         if action == "atravessar":
             return ("cross", None)
         return None
 
-    def _make(self, kind, emotion, small):
+    def plan_contexto(self, activity):
+        """Post-it do programa que você acabou de abrir (e-mail, navegador...): ("deliver", thing) ou None."""
+        notas = self.notas_de(activity)
+        text = notas.pick() if notas else None
+        if not text:
+            return None
+        thing = NoteThing(text)
+        thing.clicked.connect(self._on_click)
+        return ("deliver", thing)
+
+    def _make(self, kind, emotion, small, activity=None):
         """Monta o objeto da travessura: imagem, bilhete ou foto, conforme o tipo e a emoção."""
         if kind == "meme":
             path = config.meme_for(self.paths.memes, emotion)
@@ -94,7 +118,12 @@ class MischiefEngine(QObject):
             path = config.random_photo(self.paths.fotos)
             thing = ImageThing(path, MEME_MAX) if path else None
         else:
-            notes = self.notes_sad if kind == "bilhete_triste" else self.notes
+            if kind == "bilhete_triste":
+                notes = self.notes_sad
+            else:
+                contexto = self.notas_de(activity) if not small else None     # o de revolta é sempre o comum
+                usar = contexto is not None and (not self.notes.has_lines() or random.random() < CHANCE_CONTEXTO)
+                notes = contexto if usar else self.notes
             text = notes.pick()
             thing = NoteThing(text, small=small) if text else None
         if thing is not None and not getattr(thing, "valida", True):
